@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SocietyLens AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#07162e;color:#eef6ff;line-height:1.6}
+header{text-align:center;padding:35px 15px;background:#102746;border-bottom:2px solid #5ee7f5}
+h1{font-size:clamp(30px,5vw,48px);margin:0}
+h1 span,h2{color:#5ee7f5}
+header p{color:#c2d3e9}
+main{max-width:950px;margin:25px auto;padding:0 15px}
+.card{background:#102342;border:1px solid #345171;border-radius:16px;padding:22px;margin-bottom:20px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{background:#193b5c;border-radius:8px;padding:8px 12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{background:#0b1a30;border:1px solid #345171;border-radius:12px;padding:14px}
+label{display:block;font-weight:bold;margin-bottom:8px}
+select{width:100%;padding:12px;background:#07162e;color:white;border:1px solid #5ca9ff;border-radius:8px}
+button{padding:12px 16px;border:0;border-radius:8px;background:#5ee7f5;color:#07162e;font-weight:bold;cursor:pointer;margin:8px 5px 0 0}
+.secondary{background:#274768;color:white}
+.result{display:none}
+.bar{height:9px;background:#263d5b;border-radius:10px;margin:7px 0 15px}
+.bar span{display:block;height:100%;background:#5ee7f5;border-radius:10px}
+.note{color:#bfd0e5;font-size:14px}
+footer{text-align:center;padding:25px;color:#bfd0e5}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.card{padding:16px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>SocietyLens <span>AI</span></h1>
+  <p>Understanding people through the society around them.</p>
+  <div>COLLEGE PROJECT · INTERACTIVE DEMO</div>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Every person has a story.</h2>
+    <p>Explore how family, education, culture, community, economic resources and social institutions may influence individual experiences and opportunities.</p>
+    <div class="tags">
+      <span class="tag">👨‍👩‍👧 Family</span>
+      <span class="tag">🎓 Education</span>
+      <span class="tag">🎭 Culture</span>
+      <span class="tag">🌱 Community</span>
+      <span class="tag">💼 Economy</span>
+      <span class="tag">🏛️ Institutions</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Social Environment Analysis</h2>
+    <p class="note">Choose answers based on a fictional example or general, non-identifying information. No names are needed.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label for="family">1. Family support</label>
+        <select id="family">
+          <option value="3">Strong support</option>
+          <option value="2" selected>Some support</option>
+          <option value="1">Support could improve</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="education">2. Education access</label>
+        <select id="education">
+          <option value="3">Good access</option>
+          <option value="2" selected>Some access</option>
+          <option value="1">Limited access</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="culture">3. Cultural inclusion</label>
+        <select id="culture">
+          <option value="3">Feels respected</option>
+          <option value="2" selected>Mixed experiences</option>
+          <option value="1">Inclusion could improve</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="community">4. Community connection</label>
+        <select id="community">
+          <option value="3">Strong connection</option>
+          <option value="2" selected>Some connection</option>
+          <option value="1">Could be stronger</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="economy">5. Access to resources</label>
+        <select id="economy">
+          <option value="3">Resources usually available</option>
+          <option value="2" selected>Some resources available</option>
+          <option value="1">Resources are limited</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="institutions">6. Social institutions</label>
+        <select id="institutions">
+          <option value="3">Guidance is accessible</option>
+          <option value="2" selected>Some guidance available</option>
+          <option value="1">Guidance is difficult to access</option>
+        </select>
+      </div>
+    </div>
+
+    <button onclick="analyze()">Generate Report →</button>
+    <button class="secondary" onclick="sample()">Try Example</button>
+    <button class="secondary" onclick="resetForm()">Reset</button>
+  </section>
+
+  <section class="card result" id="report">
+    <h2>Your SocietyLens Report</h2>
+    <h3 id="score"></h3>
+    <div id="bars"></div>
+    <h3>Observations</h3>
+    <ul id="observations"></ul>
+    <h3>Possible support ideas</h3>
+    <ul id="ideas"></ul>
+    <p class="note">This educational report is based on selected answers. It does not judge a person's worth, abilities or future. Individual experiences vary.</p>
+    <button onclick="window.print()">Print / Save as PDF</button>
+  </section>
+
+  <section class="card">
+    <h2>How It Works</h2>
+    <p><b>1. Input:</b> A visitor selects responses about six social factors.</p>
+    <p><b>2. Analysis:</b> JavaScript compares responses and identifies possible areas for support.</p>
+    <p><b>3. Output:</b> The website displays a summary and practical suggestions.</p>
+    <p class="note">Project transparency: This prototype uses rule-based JavaScript, not a trained AI model. It runs in the browser and does not send answers to a server.</p>
+  </section>
+</main>
+
+<footer>SocietyLens AI · Different backgrounds. Equal opportunities.</footer>
+
+<script>
+const factors = [
+  ["family","Family support","Consider trusted-person or peer mentoring."],
+  ["education","Education access","Explore libraries and free learning resources."],
+  ["culture","Cultural inclusion","Encourage respectful and inclusive activities."],
+  ["community","Community connection","Consider clubs and welcoming group activities."],
+  ["economy","Resource access","Explore shared devices and accessible study spaces."],
+  ["institutions","Institutional guidance","Ask about school guidance and library services."]
+];
+
+function analyze(){
+  let values = factors.map(f => ({
+    name:f[1],
+    score:Number(document.getElementById(f[0]).value),
+    idea:f[2]
+  }));
+
+  let total = values.reduce((sum,f)=>sum+f.score,0);
+  document.getElementById("score").textContent =
+    "Social support indicators: "+Math.round(total/18*100)+"%";
+
+  document.getElementById("bars").innerHTML = values.map(f =>
+    `<p>${f.name}: ${f.score===3?"Good":f.score===2?"Mixed":"Needs support"}</p>
+     <div class="bar"><span style="width:${f.score/3*100}%"></span></div>`
+  ).join("");
+
+  let strengths=values.filter(f=>f.score===3);
+  let concerns=values.filter(f=>f.score===1);
+
+  let observations=[];
+  if(strengths.length)
+    observations.push("Potential strengths: "+strengths.map(f=>f.name.toLowerCase()).join(", ")+".");
+  if(concerns.length)
+    observations.push("Possible barriers: "+concerns.map(f=>f.name.toLowerCase()).join(", ")+".");
+  if(!observations.length)
+    observations.push("The answers show a mix of social supports and possible improvement areas.");
+
+  document.getElementById("observations").innerHTML =
+    observations.map(x=>"<li>"+x+"</li>").join("");
+
+  let ideas=concerns.map(f=>f.idea);
+  if(!ideas.length)
+    ideas.push("Maintain existing support and keep opportunities accessible.");
+  ideas.push("Ask the individual what support would be most useful.");
+
+  document.getElementById("ideas").innerHTML =
+    ideas.map(x=>"<li>"+x+"</li>").join("");
+
+  document.getElementById("report").style.display="block";
+  document.getElementById("report").scrollIntoView({behavior:"smooth"});
+}
+
+function sample(){
+  document.getElementById("family").value="3";
+  document.getElementById("education").value="1";
+  document.getElementById("culture").value="2";
+  document.getElementById("community").value="3";
+  document.getElementById("economy").value="1";
+  document.getElementById("institutions").value="2";
+  analyze();
+}
+
+function resetForm(){
+  factors.forEach(f=>document.getElementById(f[0]).value="2");
+  document.getElementById("report").style.display="none";
+}
+</script>
+</body>
+</html>
